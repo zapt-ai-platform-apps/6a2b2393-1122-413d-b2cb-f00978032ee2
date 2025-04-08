@@ -8,6 +8,7 @@ const BackgroundRemover = () => {
     const [processedImage, setProcessedImage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState(null);
+    const [backgroundColor, setBackgroundColor] = useState('#ffffff');
 
     const handleImageUpload = (imageFile) => {
         setOriginalImage(imageFile);
@@ -59,26 +60,28 @@ const BackgroundRemover = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-8 border border-purple-100">
             <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+                    <h2 className="text-2xl font-semibold mb-4 text-purple-700">Upload Image</h2>
                     <ImageUploader onImageUpload={handleImageUpload} />
                     
                     {originalImage && (
-                        <div className="mt-4">
-                            <img 
-                                src={URL.createObjectURL(originalImage)} 
-                                alt="Original" 
-                                className="w-full h-auto rounded-md border border-gray-300"
-                            />
+                        <div className="mt-6">
+                            <div className="rounded-lg overflow-hidden shadow-md">
+                                <img 
+                                    src={URL.createObjectURL(originalImage)} 
+                                    alt="Original" 
+                                    className="w-full h-auto"
+                                />
+                            </div>
                             <button 
                                 onClick={removeBackground}
                                 disabled={isProcessing}
-                                className={`mt-4 w-full py-3 px-4 rounded-md font-medium transition-colors cursor-pointer
+                                className={`mt-5 w-full py-3 px-4 rounded-lg font-medium transition-colors cursor-pointer
                                     ${isProcessing 
-                                        ? 'bg-blue-300 text-white cursor-not-allowed' 
-                                        : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                                        ? 'bg-purple-400 text-white cursor-not-allowed' 
+                                        : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-md hover:shadow-lg'}`}
                             >
                                 {isProcessing ? (
                                     <div className="flex items-center justify-center">
@@ -92,16 +95,40 @@ const BackgroundRemover = () => {
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">Result</h2>
+                    <h2 className="text-2xl font-semibold mb-4 text-pink-600">Result</h2>
+                    
+                    {processedImage && (
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Background Color
+                            </label>
+                            <div className="flex items-center space-x-3">
+                                <input 
+                                    type="color"
+                                    value={backgroundColor}
+                                    onChange={(e) => setBackgroundColor(e.target.value)}
+                                    className="h-10 w-10 border-0 cursor-pointer rounded"
+                                />
+                                <span className="text-sm text-gray-500">
+                                    {backgroundColor}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                    
                     <ProcessedImage 
                         processedImage={processedImage} 
-                        isProcessing={isProcessing} 
+                        isProcessing={isProcessing}
+                        backgroundColor={backgroundColor}
                     />
                 </div>
             </div>
 
             {error && (
-                <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
+                <div className="mt-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
                     {error}
                 </div>
             )}

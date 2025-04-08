@@ -1,16 +1,5 @@
 import FormData from 'form-data';
-import * as Sentry from '@sentry/node';
-
-Sentry.init({
-  dsn: process.env.VITE_PUBLIC_SENTRY_DSN,
-  environment: process.env.VITE_PUBLIC_APP_ENV,
-  initialScope: {
-    tags: {
-      type: 'backend',
-      projectId: process.env.VITE_PUBLIC_APP_ID
-    }
-  }
-});
+import Sentry from './_sentry.js';
 
 export default async function handler(req, res) {
   console.log("Background removal API called");
@@ -43,6 +32,8 @@ export default async function handler(req, res) {
       throw new Error('REMOVEBG_API_KEY environment variable is not set');
     }
 
+    console.log("Using API key:", apiKey.substring(0, 3) + '...' + apiKey.substring(apiKey.length - 3));
+
     // Create a buffer from the file
     const buffer = Buffer.from(await imageFile.arrayBuffer());
 
@@ -62,10 +53,18 @@ export default async function handler(req, res) {
       body: form,
     });
 
+    console.log("Remove.bg API response status:", response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("remove.bg API error:", errorData);
-      throw new Error(errorData.errors?.[0]?.title || 'Error processing image');
+      let errorMessage = 'Error processing image';
+      try {
+        const errorData = await response.json();
+        console.error("remove.bg API error:", errorData);
+        errorMessage = errorData.errors?.[0]?.title || errorMessage;
+      } catch (e) {
+        console.error("Error parsing error response:", e);
+      }
+      throw new Error(errorMessage);
     }
 
     console.log("remove.bg API call successful");

@@ -22,14 +22,14 @@ const ImageUploader = ({ onImageUpload }) => {
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer
                 ${isDragActive 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'}`}
+                    ? 'border-purple-500 bg-purple-50' 
+                    : 'border-gray-300 hover:border-purple-400 hover:bg-gray-50'}`}
         >
             <input {...getInputProps()} className="box-border" />
             
             <div className="flex flex-col items-center justify-center">
                 <svg 
-                    className={`w-12 h-12 mb-3 ${isDragActive ? 'text-blue-500' : 'text-gray-400'}`} 
+                    className={`w-16 h-16 mb-4 ${isDragActive ? 'text-purple-500' : 'text-gray-400'}`} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24" 
@@ -44,10 +44,10 @@ const ImageUploader = ({ onImageUpload }) => {
                 </svg>
                 
                 {isDragActive ? (
-                    <p className="text-blue-500 font-medium">Drop the image here...</p>
+                    <p className="text-purple-500 font-medium text-lg">Drop the image here...</p>
                 ) : (
                     <div>
-                        <p className="mb-1 font-medium">Drag & drop an image here, or click to select</p>
+                        <p className="mb-2 font-medium text-lg">Drag & drop an image here, or click to select</p>
                         <p className="text-sm text-gray-500">Supports JPG, PNG and GIF</p>
                     </div>
                 )}
